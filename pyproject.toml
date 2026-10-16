@@ -4,7 +4,7 @@ build-backend = "hatchling.build"
 
 [project]
 name = "paper-evidence-lab"
-version = "0.2.0"
+version = "0.3.0"
 description = "A source-preserving, deterministic English paper retrieval baseline"
 requires-python = ">=3.11,<3.15"
 license = "MIT"
@@ -20,6 +20,12 @@ dev = [
 
 [project.scripts]
 paper-evidence-lab = "paper_evidence_lab.cli:main"
+
+[project.optional-dependencies]
+semantic = [
+    "onnxruntime==1.31.0",
+    "tokenizers==0.23.3",
+]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
