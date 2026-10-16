@@ -4,7 +4,7 @@ build-backend = "hatchling.build"
 
 [project]
 name = "paper-evidence-lab"
-version = "0.1.0"
+version = "0.2.0"
 description = "A source-preserving, deterministic English paper retrieval baseline"
 requires-python = ">=3.11,<3.15"
 license = "MIT"
@@ -14,6 +14,7 @@ dependencies = ["bm25s==0.3.13"]
 dev = [
     "hatchling==1.27.0",
     "pytest==8.4.2",
+    "pytrec-eval-terrier==0.5.11",
     "ruff==0.14.0",
 ]
 

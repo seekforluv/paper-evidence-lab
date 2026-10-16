@@ -2,7 +2,7 @@
 
 **输入英文问题，在给定文献集合里找相关论文，保留原始摘要与出处。**
 
-这是一个可复现的 BM25 检索基线，面向逐步开展研究的学生。M0 已实现本地命令行检索、严格数据校验、来源获取和 JSON / Markdown 报告。无需 API key、在线大模型或 GPU。
+这是一个可复现的 BM25 检索基线，面向逐步开展研究的学生。已实现本地命令行检索、严格数据校验、来源获取、JSON / Markdown 报告，以及固定 SciFact 数据的完整检索评测。无需 API key、在线大模型或 GPU。
 
 > **检索相关不等于结论已证实。** 某篇论文包含更多查询词，可能排得更靠前；这不说明它的实验更可靠，也不说明结论适用于所有人。
 
@@ -87,6 +87,22 @@ a an and are as at be by for from in is it of on or that the to was with
 
 `BM25(method="lucene", idf_method="lucene", k1=1.5, b=0.75)`，NumPy 后端、float32；参数未在种子上调优。保留重复查询词；重复出现会累加贡献。全为停用词的文献仍保留在语料中，但本身无词项命中。当前每次查询重新建小型索引、遍历并排序全部命中，尚未作大规模性能承诺。
 
+## 固定 SciFact 评测
+
+独立于两篇演示种子，M1 在官方 BEIR SciFact 的 5,183 篇文献、300 条查询上实际得到 **nDCG@10 = 0.67246、Recall@10 = 0.78561**。BEIR test 对应原 SciFact 公开 dev。完整参数、600 个逐查询指标参考核对、确定性复跑和错误样本分析见[评测报告](reports/scifact/bm25.md)。它衡量检索相关性，不是事实正确率。
+
+```bash
+# 只在首次运行时获取；已有目录不会覆盖
+uv run --frozen paper-evidence-lab fetch-scifact --output data/local/scifact
+mkdir -p reports/local
+uv run --frozen paper-evidence-lab evaluate \
+  --dataset data/local/scifact > reports/local/bm25.json
+uv run --frozen python scripts/check_evaluation.py \
+  --dataset data/local/scifact --result reports/local/bm25.json
+```
+
+输入 ZIP 和成员文件必须匹配固定哈希；原始数据留在忽略目录。组件许可和不同来源标签的差异见[数据说明](data/scifact.md)。评测使用独立 top-10 接口，展示用的 `search` 仍限 1–5。参数没有在本测试集调优，后续模型也使用同样的划分和指标。
+
 ## 测试和项目结构
 
 ```bash
@@ -111,11 +127,11 @@ reports/local/          真实检索报告（忽略）
 ## 研究边界与下一步
 
 - **M0：** 来源可追溯的 BM25 检索原型；不产生准确率、证据强度或支持/反驳判决。
-- **M1（未实现）：** 独立固定 SciFact 数据、查询和相关性标签，核对组件许可，验证 nDCG@10 / Recall@10 和错误分析。届时另设评测接口；本轮 top-5 演示不冒充 top-10 评测。
+- **M1：** 固定 SciFact 输入、独立 top-10 评测、nDCG@10 / Recall@10 参考核对和有限错误分析，完整结果与复现命令已保存。
 - **M2（未实现）：** 一个轻量英文语义模型，在同样的数据划分与指标下比较。
 - **M3（未实现）：** 基于真实实验形成技术报告和可分享演示。
 
-软件工程两篇种子与 SciFact 的领域不同，未来基准结果也不能直接说明本演示问题已得到可靠回答。METR 的[后续实验设计更新](https://metr.org/blog/2026-02-24-uplift-update/)仅作为背景链接，不作为第三篇论文、摘要或评测样本。
+软件工程两篇种子与 SciFact 的领域不同，基准结果也不能直接说明本演示问题已得到可靠回答。METR 的[后续实验设计更新](https://metr.org/blog/2026-02-24-uplift-update/)仅作为背景链接，不作为第三篇论文、摘要或评测样本。
 
 ## 许可与来源
 

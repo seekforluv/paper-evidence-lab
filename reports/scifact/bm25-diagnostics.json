@@ -1,0 +1,23 @@
+{
+  "queries": 300,
+  "no_relevant_in_top10": 57,
+  "partial_recall": 14,
+  "full_recall": 229,
+  "top1_relevant": 168,
+  "fewer_than_10_results": 0,
+  "relevant_document_count_distribution": {
+    "1": 277,
+    "2": 14,
+    "3": 4,
+    "4": 3,
+    "5": 2
+  },
+  "sample_policy": "lexicographically first 3 zero-recall and first 2 partial-recall query IDs",
+  "sample_query_ids": [
+    "1",
+    "1049",
+    "1110",
+    "1041",
+    "1132"
+  ]
+}
