@@ -21,6 +21,10 @@ jobs:
       - run: uv run --frozen --extra semantic ruff check .
       - run: uv run --frozen --extra semantic ruff format --check .
       - run: uv run --frozen --extra semantic pytest -q
+      - name: Rebuild frozen comparison artifacts
+        run: |
+          uv run --frozen --extra semantic python scripts/build_comparison.py
+          git diff --exit-code -- reports/scifact/comparison.json reports/scifact/comparison.html
       - name: Offline CLI smoke test
         run: |
           uv run --frozen --extra semantic python -m paper_evidence_lab search --corpus tests/fixtures/synthetic.jsonl --query 'developer productivity' > /tmp/demo.json
