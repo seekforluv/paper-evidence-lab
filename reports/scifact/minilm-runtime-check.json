@@ -1,0 +1,26 @@
+{
+  "OS_network_denied": true,
+  "provider": [
+    "CPUExecutionProvider"
+  ],
+  "vector_shape": [
+    3,
+    384
+  ],
+  "all_finite": true,
+  "max_norm_error": 0.0,
+  "synthetic_related_cosine": 0.8603461980819702,
+  "synthetic_unrelated_cosine": -0.031422778964042664,
+  "same_text_different_padding_max_abs_delta": 1.210719347000122e-07,
+  "special_token_ids": [
+    101,
+    102
+  ],
+  "truncated_total_tokens": 256,
+  "scope": "original synthetic sanity cases; not scientific model quality or PyTorch parity",
+  "two_process_results_identical": true,
+  "result_sha256": "b10c8db0d056637b23662bc8900fb397653fd2149299c941139241211b58b063",
+  "raw_score_vs_ordinal_metric_max_abs_delta": 0.0,
+  "query_count": 300,
+  "queries_with_equal_top10_scores": 0
+}

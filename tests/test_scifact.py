@@ -150,3 +150,27 @@ def test_reference_checker_rejects_missing_provenance(source, tmp_path):
         result_path.write_text(json.dumps(result))
         with pytest.raises(ValueError, match="provenance"):
             check(root, result_path)
+
+
+def test_reference_checker_supports_dense_negative_scores(source, tmp_path):
+    import runpy
+    from pathlib import Path
+
+    from paper_evidence_lab.model_assets import model_manifest
+
+    module, blob, _ = source
+    benchmark = importlib.import_module("paper_evidence_lab.benchmark")
+    root = tmp_path / "snapshot"
+    module.acquire_scifact(root, archive_bytes=blob)
+    result = benchmark.evaluate_bm25(root)
+    result["results"]["q1"][0]["score"] = -0.25
+    result_path = tmp_path / "result.json"
+    check = runpy.run_path(str(Path(__file__).parents[1] / "scripts/check_evaluation.py"))["check"]
+    result_path.write_text(json.dumps(result))
+    with pytest.raises(ValueError, match="invalid ranked"):
+        check(root, result_path)
+    result["method"] = "MiniLM (ONNX)"
+    result["config"]["positive_scores_only"] = False
+    result["model"] = model_manifest()
+    result_path.write_text(json.dumps(result))
+    assert check(root, result_path)["passed"]

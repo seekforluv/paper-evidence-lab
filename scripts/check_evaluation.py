@@ -9,6 +9,7 @@ from pathlib import Path
 import pytrec_eval
 
 from paper_evidence_lab.evaluation import evaluate_rankings
+from paper_evidence_lab.model_assets import model_manifest
 from paper_evidence_lab.scifact import load_verified_scifact, source_manifest
 
 
@@ -24,13 +25,20 @@ def check(dataset: Path, result_path: Path) -> dict:
     }
     if output.get("source") != expected_source:
         raise ValueError("result source provenance differs from the pinned source")
+    if output.get("method") not in {"BM25", "MiniLM (ONNX)"}:
+        raise ValueError("unsupported method")
+    positive_only = output["method"] == "BM25"
+    if output.get("config", {}).get("positive_scores_only") is not positive_only:
+        raise ValueError("score filtering differs from declared method")
+    if not positive_only and output.get("model") != model_manifest():
+        raise ValueError("model provenance differs from the pinned model")
     rankings = {}
     for qid, rows in output["results"].items():
         if len(rows) > 10 or any(
             row["doc_id"] not in data.documents
             or row["doc_id"] == qid
             or not math.isfinite(row["score"])
-            or row["score"] <= 0
+            or (positive_only and row["score"] <= 0)
             for row in rows
         ):
             raise ValueError(f"invalid ranked result for {qid}")

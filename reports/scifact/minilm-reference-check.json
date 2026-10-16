@@ -1,0 +1,14 @@
+{
+  "reference": "pytrec-eval-terrier",
+  "reference_version": "0.5.11",
+  "query_count": 300,
+  "per_query_values_compared": 600,
+  "max_absolute_error": 0.0,
+  "tolerance": 1e-12,
+  "score_encoding": "strict descending ordinal scores preserve the explicit rank order",
+  "aggregate": {
+    "ndcg": 0.6450816521455776,
+    "recall": 0.7833333333333333
+  },
+  "passed": true
+}

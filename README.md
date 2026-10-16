@@ -2,7 +2,7 @@
 
 **输入英文问题，在给定文献集合里找相关论文，保留原始摘要与出处。**
 
-这是一个可复现的 BM25 检索基线，面向逐步开展研究的学生。已实现本地命令行检索、严格数据校验、来源获取、JSON / Markdown 报告，以及固定 SciFact 数据的完整检索评测。无需 API key、在线大模型或 GPU。
+这是一个可复现的论文检索实验，面向逐步开展研究的学生。已实现本地BM25检索、严格数据校验、来源获取、JSON / Markdown 报告，以及固定 SciFact 数据上的BM25与轻量MiniLM评测。无需 API key、在线大模型或 GPU。
 
 > **检索相关不等于结论已证实。** 某篇论文包含更多查询词，可能排得更靠前；这不说明它的实验更可靠，也不说明结论适用于所有人。
 
@@ -103,12 +103,33 @@ uv run --frozen python scripts/check_evaluation.py \
 
 输入 ZIP 和成员文件必须匹配固定哈希；原始数据留在忽略目录。组件许可和不同来源标签的差异见[数据说明](data/scifact.md)。评测使用独立 top-10 接口，展示用的 `search` 仍限 1–5。参数没有在本测试集调优，后续模型也使用同样的划分和指标。
 
+## 一个固定语义模型的比较
+
+唯一预选的 `all-MiniLM-L6-v2` 使用官方固定版本ONNX权重，在本地CPU推理。没有尝试多个模型择优；本次结果中，BM25平均nDCG更高。
+
+| 方法 | nDCG@10 | Recall@10 |
+| --- | ---: | ---: |
+| BM25 | 0.67246 | 0.78561 |
+| MiniLM（ONNX） | 0.64508 | 0.78333 |
+
+```bash
+uv sync --frozen --extra semantic
+uv run --frozen --extra semantic paper-evidence-lab fetch-model --output data/local/minilm
+uv run --frozen --extra semantic paper-evidence-lab evaluate-semantic \
+  --dataset data/local/scifact --model data/local/minilm > reports/local/minilm.json
+uv run --frozen --extra semantic python scripts/check_evaluation.py \
+  --dataset data/local/scifact --result reports/local/minilm.json
+```
+
+3,681/5,183篇文献超过模型256-token上限，查询均未截断。未进行截断消融，不能将分数差距确定归因于截断。模型预训练与SciFact的具体重叠未核实。完整配置、真实运行边界及校验见[MiniLM报告](reports/scifact/minilm.md)；[来源与许可](data/minilm.md)单独记录。推理加载本地已验证文件，不向服务端发送原文。
+
 ## 测试和项目结构
 
 ```bash
-uv run --frozen pytest -q
-uv run --frozen ruff check .
-uv run --frozen ruff format --check .
+uv sync --frozen --extra semantic
+uv run --frozen --extra semantic pytest -q
+uv run --frozen --extra semantic ruff check .
+uv run --frozen --extra semantic ruff format --check .
 uv build --no-sources --no-build-isolation
 ```
 
@@ -128,13 +149,13 @@ reports/local/          真实检索报告（忽略）
 
 - **M0：** 来源可追溯的 BM25 检索原型；不产生准确率、证据强度或支持/反驳判决。
 - **M1：** 固定 SciFact 输入、独立 top-10 评测、nDCG@10 / Recall@10 参考核对和有限错误分析，完整结果与复现命令已保存。
-- **M2（未实现）：** 一个轻量英文语义模型，在同样的数据划分与指标下比较。
+- **M2：** 一个预先固定的轻量英文语义模型，在同样的数据划分与指标下比较；完整结果和独立校验已保存。
 - **M3（未实现）：** 基于真实实验形成技术报告和可分享演示。
 
 软件工程两篇种子与 SciFact 的领域不同，基准结果也不能直接说明本演示问题已得到可靠回答。METR 的[后续实验设计更新](https://metr.org/blog/2026-02-24-uplift-update/)仅作为背景链接，不作为第三篇论文、摘要或评测样本。
 
 ## 许可与来源
 
-原创代码和合成夹具采用 [MIT](LICENSE)。第三方依赖、arXiv 元数据与论文全文各自适用其条款，详见[数据说明](data/README.md)和[第三方说明](THIRD_PARTY_NOTICES.md)。未下载或发布论文 PDF、模型权重、私人会话或账户信息。
+原创代码和合成夹具采用 [MIT](LICENSE)。第三方依赖、arXiv 元数据、论文全文与模型各自适用其条款，详见[数据说明](data/README.md)和[第三方说明](THIRD_PARTY_NOTICES.md)。模型权重下载后仅保留本地；未发布原始语料、模型权重、私人会话或账户信息，未下载论文PDF。
 
 本项目由 Codex 实现与实测，真实 ZCode 参与候选代码审查；模型审查不代替可执行测试或科学证据。发布只代表可复现原型，不代表论文创新、录用或基准领先。

@@ -9,6 +9,8 @@ from pathlib import Path
 
 from .benchmark import evaluate_bm25
 from .corpus import load_corpus
+from .dense_benchmark import evaluate_semantic
+from .model_assets import acquire_model
 from .report import render_markdown
 from .retrieval import BM25Index
 from .scifact import acquire_scifact
@@ -27,8 +29,24 @@ def main(argv: list[str] | None = None) -> int:
     acquire.add_argument("--archive", type=Path, help="可选：导入已下载的官方 ZIP，仍严格核对哈希")
     evaluate = commands.add_parser("evaluate", help="校验本地 SciFact 后运行固定 BM25 top-10 评测")
     evaluate.add_argument("--dataset", type=Path, required=True)
+    model = commands.add_parser("fetch-model", help="下载或导入固定 MiniLM 模型到新目录")
+    model.add_argument("--output", type=Path, required=True)
+    model.add_argument("--from-directory", type=Path)
+    dense = commands.add_parser(
+        "evaluate-semantic", help="使用固定本地 MiniLM 运行相同 SciFact 评测"
+    )
+    dense.add_argument("--dataset", type=Path, required=True)
+    dense.add_argument("--model", type=Path, required=True)
     args = parser.parse_args(argv)
     try:
+        if args.command == "fetch-model":
+            print(json.dumps(acquire_model(args.output, args.from_directory), indent=2))
+            return 0
+        if args.command == "evaluate-semantic":
+            print(
+                json.dumps(evaluate_semantic(args.dataset, args.model), indent=2, allow_nan=False)
+            )
+            return 0
         if args.command == "fetch-scifact":
             receipt = acquire_scifact(
                 args.output, archive_bytes=args.archive.read_bytes() if args.archive else None
