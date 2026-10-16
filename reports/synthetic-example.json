@@ -1,0 +1,28 @@
+[
+  {
+    "doc_id": "synthetic-developer",
+    "title": "Developer productivity fixture",
+    "abstract": "An invented document mentions developer productivity and coding tools. It makes no empirical claim.",
+    "source_url": "https://example.org/synthetic-developer",
+    "source_type": "paper",
+    "language": "en",
+    "license_url": null,
+    "fetched_at": "2026-01-01T00:00:00Z",
+    "score": 0.7533736228942871,
+    "title_missing": false,
+    "abstract_missing": false
+  },
+  {
+    "doc_id": "synthetic-missing",
+    "title": "Developer notes without an abstract",
+    "abstract": null,
+    "source_url": "https://example.org/synthetic-missing",
+    "source_type": "paper",
+    "language": "en",
+    "license_url": null,
+    "fetched_at": "2026-01-01T00:00:00Z",
+    "score": 0.26156723499298096,
+    "title_missing": false,
+    "abstract_missing": true
+  }
+]

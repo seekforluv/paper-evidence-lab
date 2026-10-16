@@ -1,0 +1,28 @@
+name: Offline checks
+
+on:
+  push:
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+      - uses: astral-sh/setup-uv@37802adc94f370d6bfd71619e3f0bf239e1f3b78 # v7
+        with:
+          version: "0.13.0"
+          enable-cache: true
+      - run: uv sync --frozen
+      - run: uv run --frozen ruff check .
+      - run: uv run --frozen ruff format --check .
+      - run: uv run --frozen pytest -q
+      - name: Offline CLI smoke test
+        run: |
+          uv run --frozen python -m paper_evidence_lab search --corpus tests/fixtures/synthetic.jsonl --query 'developer productivity' > /tmp/demo.json
+          uv run --frozen python -c "import json; rows=json.load(open('/tmp/demo.json')); assert rows[0]['doc_id']=='synthetic-developer' and len(rows)==2"
+      - run: uv build --no-sources --no-build-isolation

@@ -1,0 +1,32 @@
+[build-system]
+requires = ["hatchling==1.27.0"]
+build-backend = "hatchling.build"
+
+[project]
+name = "paper-evidence-lab"
+version = "0.1.0"
+description = "A source-preserving, deterministic English paper retrieval baseline"
+requires-python = ">=3.11,<3.15"
+license = "MIT"
+dependencies = ["bm25s==0.3.13"]
+
+[dependency-groups]
+dev = [
+    "hatchling==1.27.0",
+    "pytest==8.4.2",
+    "ruff==0.14.0",
+]
+
+[project.scripts]
+paper-evidence-lab = "paper_evidence_lab.cli:main"
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["src"]
+
+[tool.ruff]
+target-version = "py311"
+line-length = 100
+
+[tool.ruff.lint]
+select = ["E", "F", "I"]

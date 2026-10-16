@@ -1,0 +1,16 @@
+[
+  {
+    "arxiv_id": "2302.06590v1",
+    "title": "The Impact of AI on Developer Productivity: Evidence from GitHub Copilot",
+    "authors": ["Sida Peng", "Eirini Kalliamvakou", "Peter Cihon", "Mert Demirer"],
+    "source_url": "https://arxiv.org/abs/2302.06590v1",
+    "license_url": "https://arxiv.org/licenses/nonexclusive-distrib/1.0/license.html"
+  },
+  {
+    "arxiv_id": "2507.09089v2",
+    "title": "Measuring the Impact of Early-2025 AI on Experienced Open-Source Developer Productivity",
+    "authors": ["Joel Becker", "Nate Rush", "Elizabeth Barnes", "David Rein"],
+    "source_url": "https://arxiv.org/abs/2507.09089v2",
+    "license_url": "https://creativecommons.org/licenses/by/4.0/"
+  }
+]
