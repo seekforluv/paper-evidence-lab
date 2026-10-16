@@ -1,0 +1,60 @@
+{
+  "schema_version": 1,
+  "test_count": 127,
+  "offline_tests_pass": true,
+  "ruff_lint_and_format_pass": true,
+  "wheel_and_sdist_build_pass": true,
+  "independent_review": "approved after cutoff-validation regression fix",
+  "zcode_review": "real GLM-5.3 reviewed supplied report; Codex verified numbers and wording",
+  "browser": {
+    "engine": "Chrome/155.0.0.0",
+    "initial_transport": "localhost HTTP",
+    "local_file_url_tested": false,
+    "default_count": 300,
+    "filter_counts": {
+      "ndcg": [
+        60,
+        163,
+        77
+      ],
+      "recall": [
+        30,
+        243,
+        27
+      ]
+    },
+    "search_empty_recovery": true,
+    "ranks_match_data": true,
+    "keyboard_selection": true,
+    "focus_outline": "solid",
+    "mobile_widths": [
+      {
+        "client": 390,
+        "scroll": 390,
+        "viewport": 390
+      },
+      {
+        "client": 320,
+        "scroll": 320,
+        "viewport": 320
+      }
+    ],
+    "page_errors": [],
+    "external_requests": [],
+    "download": "scifact-bm25-minilm-comparison.json",
+    "filtering_and_download_with_browser_offline": true
+  },
+  "browser_download_json_matches_canonical": true,
+  "generated_html_exact_rebuild": true,
+  "all_recorded_implementation_hashes_match": true,
+  "complete_source_texts_scanned": 6265,
+  "complete_source_text_found_in_public_files": false,
+  "artifact_sha256": {
+    "comparison.json": "700073ad835052746a2fe4332ae0d8f833eaf1629fca22cba63d11159e2286c0",
+    "comparison.html": "ba20feca056c0abf5d00d2841717c157e8385967049f860efa2c5774faede65b"
+  },
+  "limits": [
+    "Browser QA used localhost then offline interactions; file URL was not tested.",
+    "127 tests do not prove scientific validity, significance, novelty or paper acceptance."
+  ]
+}
